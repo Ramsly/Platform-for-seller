@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 
 class Seller(models.Model):
@@ -65,7 +66,21 @@ class Deal(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="deal_with_seller")
     buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name="deal_with_buyer")
     flower = models.ForeignKey(FlowerLot, on_delete=models.CASCADE, related_name="deal_with_flower")
+    price = models.FloatField(default=0)
+    count = models.IntegerField(default=0)
     status = models.CharField(choices=STATUS, max_length=10)
 
     def __str__(self):
-        return f'{self.seller} - {self.buyer} - {self.status}'
+        return f'{self.seller} - {self.buyer} - {self.status}. {self.price} * {self.count} = {self.price * self.count}'
+    
+    def save(self, *args, **kwargs):
+        super(Deal, self).save()
+
+
+def print_res(instance, created, sender=Deal, *args, **kwargs):
+    if created:
+        for i in Deal.objects.all():
+            print(i)
+
+
+post_save.connect(print_res, sender=Deal)
