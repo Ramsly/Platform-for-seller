@@ -39,18 +39,20 @@ class FlowerLot(models.Model):
 
 class CommentsForLots(models.Model):
     flower = models.ForeignKey(FlowerLot, on_delete=models.CASCADE)
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name="comments_from_buyers_to_lots")
     text = models.TextField(default="", max_length=500)
 
     def __str__(self):
-        return f'{self.flower} - {self.text[:10]}...'
+        return f'{self.flower} - {self.buyer} - {self.text[:10]}...'
 
 
 class CommentForSeller(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="comments_to_seller")
+    buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name="comments_from_buyers_to_seller")
     text = models.TextField(default="", max_length=500)
 
     def __str__(self):
-        return f'{self.seller} - {self.text[:10]}...'
+        return f'{self.seller} - {self.buyer} - {self.text[:10]}...'
 
 
 class Deal(models.Model):
@@ -66,4 +68,4 @@ class Deal(models.Model):
     status = models.CharField(choices=STATUS, max_length=10)
 
     def __str__(self):
-        return f'{self.seller} - {self.buyer}'
+        return f'{self.seller} - {self.buyer} - {self.status}'
