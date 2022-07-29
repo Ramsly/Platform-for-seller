@@ -1,6 +1,5 @@
 import json
-
-from .models import Seller, Deal
+import flowers.models
 
 
 def get_info() -> None:
@@ -11,13 +10,11 @@ def get_info() -> None:
     :return: None
     :rtype: None
     """
-    sellers = Seller.objects.all()
+    sellers = flowers.models.Seller.objects.all()
     result = []
     for seller in sellers:
-        deals = Deal.objects.filter(seller=seller)
+        deals = flowers.models.Deal.objects.filter(seller=seller)
         buyers = [deal.buyer.buyer for deal in deals]
         sum_of_deals = sum([deal.get_cost() for deal in deals])
         result.append([seller.seller, buyers, sum_of_deals])
-
-    with open('data.json', 'w') as f:
-        json.dump(result, f)
+    print(json.dumps(result, default=str, indent=2))

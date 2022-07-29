@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
+from django.db.models.signals import post_save
+
+from .services import get_info
 
 
 class Seller(models.Model):
@@ -71,6 +74,9 @@ class Deal(models.Model):
 
     def __str__(self):
         return f'{self.seller} - {self.buyer} - {self.status}'
+
+    def save(self, *args, **kwargs):
+        super(Deal, self).save(*args, **kwargs)
     
     def get_cost(self) -> float:
         """
@@ -80,3 +86,12 @@ class Deal(models.Model):
         :rtype: float
         """
         return self.flower.price * self.count
+
+
+def get_json_signal(instance, created, sender=Deal, *args, **kwargs):
+    print('worked')
+    if created:
+        get_info()
+
+
+post_save.connect(get_json_signal, sender=Deal)
