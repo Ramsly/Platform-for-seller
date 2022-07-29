@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 
 
 class Seller(models.Model):
@@ -30,7 +31,7 @@ class FlowerLot(models.Model):
     title = models.CharField(max_length=100, default="")
     color = models.CharField(choices=CHOICE_COLOR, max_length=10)
     count = models.PositiveIntegerField(default=0)
-    price = models.FloatField(default=0)
+    price = models.FloatField(default=0, validators=[MinValueValidator(0.0)])
     visible = models.BooleanField(default=True)
 
     def __str__(self):
@@ -71,5 +72,11 @@ class Deal(models.Model):
     def __str__(self):
         return f'{self.seller} - {self.buyer} - {self.status}'
     
-    def get_cost(self):
+    def get_cost(self) -> float:
+        """
+        Get cost of all operations
+
+        :return: Multiplication of price and count item - float
+        :rtype: float
+        """
         return self.flower.price * self.count
