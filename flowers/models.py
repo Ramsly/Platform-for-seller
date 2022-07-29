@@ -29,7 +29,7 @@ class FlowerLot(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="flower_lot_of_seller")
     title = models.CharField(max_length=100, default="")
     color = models.CharField(choices=CHOICE_COLOR, max_length=10)
-    count = models.IntegerField(default=0)
+    count = models.PositiveIntegerField(default=0)
     price = models.FloatField(default=0)
     visible = models.BooleanField(default=True)
 
@@ -65,11 +65,11 @@ class Deal(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name="deal_with_seller")
     buyer = models.ForeignKey(Buyer, on_delete=models.CASCADE, related_name="deal_with_buyer")
     flower = models.ForeignKey(FlowerLot, on_delete=models.CASCADE, related_name="deal_with_flower")
-    count = models.IntegerField(default=0)
+    count = models.PositiveIntegerField(default=0)
     status = models.CharField(choices=STATUS, max_length=10)
 
     def __str__(self):
-        return f'{self.seller} - {self.buyer} - {self.status}. {self.price} * {self.count} = {self.price * self.count}'
+        return f'{self.seller} - {self.buyer} - {self.status}'
     
     def get_cost(self):
         return self.flower.price * self.count
