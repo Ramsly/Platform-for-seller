@@ -89,7 +89,6 @@ class Deal(models.Model):
 
 
 def get_json_signal(instance, created, sender=Deal, *args, **kwargs):
-    print('worked')
     if created:
         get_info()
 
