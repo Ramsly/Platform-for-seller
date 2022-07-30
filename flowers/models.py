@@ -6,15 +6,24 @@ from django.db.models.signals import post_save
 from .services import get_info
 
 
+class TypeOfUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_seller = models.BooleanField()
+    is_buyers = models.BooleanField()
+
+    def __str__(self):
+        return f'{self.user}'
+
+
 class Seller(models.Model):
-    seller = models.OneToOneField(User, on_delete=models.CASCADE)
+    seller = models.OneToOneField(TypeOfUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.seller}'
 
 
 class Buyer(models.Model):
-    buyer = models.OneToOneField(User, on_delete=models.CASCADE)
+    buyer = models.OneToOneField(TypeOfUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.buyer}'
